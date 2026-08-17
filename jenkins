@@ -1,0 +1,112 @@
+
+## Jenkins installation details
+
+
+sudo apt update
+FOR JRE                    sudo apt install fontconfig openjdk-21-jre -y
+FOR JDK                    sudo apt install openjdk-21-jdk
+
+java -version
+
+
+sudo wget -O /etc/apt/keyrings/jenkins-keyring.asc \
+  https://pkg.jenkins.io/debian-stable/jenkins.io-2026.key
+
+echo "deb [signed-by=/etc/apt/keyrings/jenkins-keyring.asc]" \
+  https://pkg.jenkins.io/debian-stable binary/ | sudo tee \
+  /etc/apt/sources.list.d/jenkins.list > /dev/null
+
+sudo apt update
+
+sudo apt install jenkins -y
+
+jenkins --version
+
+systemctl status jenkins
+systemctl stop jenkins
+systemctl start jenkins
+
+
+---------Pipeline 
+
+
+pipeline {
+    agent any
+
+    stages {
+        stage('Build') {
+            steps {
+                'Command'
+            }
+        }
+    }
+}
+
+
+
+pipeline {
+agent any
+
+    stages {
+        stage('Git clone') {
+            steps {
+            git branch: 'main', url: 'https://github.com/DevSecOpsG/helloworldsimplejavaprogram'
+            }
+        }
+        stage('Build'){
+            steps{
+            sh 'javac helloworld.java'
+            }
+        }
+        stage('Run'){
+            steps{
+            sh 'java Simple'
+            }
+        }
+    }
+}
+
+--------------
+
+
+pipeline {
+    agent any
+
+    tools {
+        maven 'Maven'   // make sure Maven is configured in Jenkins
+        jdk 'Java'      // JDK also configured
+    }
+
+    stages {
+
+        stage('Clone Code') {
+            steps {
+                git 'https://github.com/CloudDevOpsHub/javaspringboot-ecommerce'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                sh 'gradle'
+            }
+        }
+
+        stage('selinum Test') {
+            steps {
+                sh '/path/local.sh'
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                sh '''
+                echo "Stopping old app if running"
+                pkill -f jenkins.war || true
+
+                echo "Starting application on port 3000"
+                nohup java -jar jenkins.war --httpPort=3000 > app.log 2>&1 &
+                '''
+            }
+        }
+    }
+}
