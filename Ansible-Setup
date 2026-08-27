@@ -1,0 +1,52 @@
+Part 1 Create 3 ubuntu VM’s or Docker container 
+Step 1 Go to docker playground create an  instance / node and create 3 Ubuntu  container 
+
+1ˢᵗ - ansible_master 
+2ⁿᵈ target 1
+3ʳᵈ target 2
+
+Step 2 create containers    
+
+sudo apt-get update && sudo apt install docker.io -y
+
+docker run -itd --name ansible_master ubuntu /bin/bash
+docker run -itd --name target1 ubuntu /bin/bash
+docker run -itd --name target2 ubuntu /bin/bash
+
+Step 3 check the process and name for verification 
+docker ps
+
+Part 2 install Ansible and requies tools in ansible_master 
+Step 4 go to ansible_master container  update the ubuntu and install some dependencies and ansible
+
+docker exec -it ansible_master bash
+apt update
+apt install python-is-python3 vim iputils-ping openssh-client -y
+                           Geographical area 6 city 44
+apt install software-properties-common
+add-apt-repository --yes --update ppa:ansible/ansible
+apt install ansible
+
+ansible --version
+------------------------------
+Part 3 Setup n number of target machines (2)/ container(2)Login to Target and setup target 1 
+
+Step 5  Login to target 1 
+docker exec -it target1 bash
+
+Step 6 Update and install SSH and required dependencies 
+apt update
+apt install vim python-is-python3 iputils-ping openssh-client -y
+apt-get install openssh-client openssh-server -y
+Geographical area 6 city 44
+
+Step 7 edit sshd_config to allow SSH and root login as ansible requires
+
+cd /etc/ssh 
+vi sshd_config
+uncomment the parameter and modify the permission to yes PermitRootLogin yes and PasswordAuthentication yes
+
+Step 8 Start the service ssh if its not running
+service ssh status
+service ssh start 
+service ssh status  
